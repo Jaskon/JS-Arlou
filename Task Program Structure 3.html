@@ -1,0 +1,31 @@
+<script>
+	function consoleChess(size, symbols) {
+		if (size <= 0) {
+			console.log("You need to enter a positive number into \"size\"!");
+			return false;
+		}
+		if (symbols.length == 0) {
+			console.log("There is no symbols!");
+			return false;
+		}
+		var tStr;		// tempString
+		var sL = symbols.length;		// symbolsLength
+		for (var i = 0; i < size; i++) {
+			tStr = "";
+			for (var j = 0; j < size; j++) {
+				tStr += symbols[(i%sL + j%sL) % sL];
+			}
+			console.log(tStr);
+		}
+	}
+
+	var size;
+	size = prompt("Size", "8");
+	size = parseInt(size);
+	if (!size)
+		size = 8;
+	symbols = prompt("Symbols (via \"_\")", " _#");
+	var symbols = symbols.split("_");
+
+	consoleChess(size, symbols);
+</script>
