@@ -14,7 +14,7 @@
     }
 
     function countBs(string) {
-    	return string.split("B").length - 1;
+    	return countChar(string, "B");
     }
 
   console.log(countBs("BBC")); // → 2
