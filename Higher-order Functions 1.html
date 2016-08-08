@@ -1,0 +1,10 @@
+<script>
+	var arrays = [[1, 2, 3], [4, 5], [6]];
+
+	var finalArr = arrays.reduce(function(savedArr, elem, i, array) {
+		return savedArr.concat(elem);
+	}, []);
+
+	console.log(finalArr);
+	// → [1, 2, 3, 4, 5, 6]
+</script>
