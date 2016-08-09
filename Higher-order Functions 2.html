@@ -1,0 +1,26 @@
+<script src="JS/ancestry.js"></script>
+<script>
+	var ancestry = JSON.parse(ANCESTRY_FILE);
+	function average(array) {
+		function plus(a, b) { return a + b; }
+		return array.reduce(plus) / array.length;
+	}
+
+	var byName = {};
+	ancestry.forEach(function(person) {
+		byName[person.name] = person;
+	});
+
+	var arr = new Array();
+	for (var i = 0; i < ancestry.length; i++)
+		if (byName[ancestry[i].mother])
+			arr.push(ancestry[i].born - byName[ancestry[i].mother].born);
+
+	/*ancestry.forEach(function(elem) {
+		if (byName[elem.mother])
+			arr.push(elem.born - byName[elem.mother].born);
+	});*/
+
+	console.log(average(arr));
+	// → 31.2
+</script>
