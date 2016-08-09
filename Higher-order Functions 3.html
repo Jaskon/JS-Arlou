@@ -1,0 +1,24 @@
+<script src="JS/ancestry.js"></script>
+<script>
+	var ancestry = JSON.parse(ANCESTRY_FILE);
+	function average(array) {
+		function plus(a, b) { return a + b; }
+		return array.reduce(plus) / array.length;
+	}
+
+	var arr = [], k;
+	for (var i = 0; i < ancestry.length; i++) {
+		k = Math.ceil(ancestry[i].died / 100);
+		if (!arr[k]) arr[k] = [];
+		arr[k].push(ancestry[i].died - ancestry[i].born);
+	}
+
+	for (var i in arr)
+		console.log(average(arr[i]));
+	// → 16: 43.5
+	//   17: 51.2
+	//   18: 52.8
+	//   19: 54.8
+	//   20: 84.7
+	//   21: 94
+</script>
