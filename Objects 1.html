@@ -2,15 +2,11 @@
 	var vector = function(x, y) {
 		this.x = x;
 		this.y = y;
-		vector.prototype.plus = function(vector) {
-			this.x += vector.x;
-			this.y += vector.y;
-			return this;
+		vector.prototype.plus = function(v) {
+			return new vector(this.x + v.x, this.y + v.y);
 		};
-		vector.prototype.minus = function(vector) {
-			this.x -= vector.x;
-			this.y -= vector.y;
-			return this;
+		vector.prototype.minus = function(v) {
+			return new vector(this.x - v.x, this.y - v.y);
 		};
 		Object.defineProperty(this, "length", {
 			get: function() {
