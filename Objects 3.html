@@ -1,0 +1,53 @@
+<script>
+	function ArraySeq(arr) {
+		this.array = arr;
+		this.i;
+		Object.defineProperty(this, "getFirstValue", {
+			get: function() {
+				this.i = 0;
+				return this.array[this.i];
+			}
+		});
+		Object.defineProperty(this, "getNextValue", {
+			get: function() {
+				this.i++;
+				return this.array[this.i];
+			}
+		});
+		Object.defineProperty(this, "length", {
+			get: function() {
+				return this.array.length;
+			}
+		});
+	}
+
+	function RangeSeq(start, end) {
+		var arr = new Array(end - start);
+		var n = end - start;
+		for (var i = 0; i < n; i++) {
+			arr[i] = start;
+			start++;
+		}
+		return new ArraySeq(arr);
+	}
+
+	function logFive(arrSeq) {
+		var str = "";
+		var n = arrSeq.length < 5 ? arrSeq.length-1 : 4;
+		str += arrSeq.getFirstValue;
+		for (var i = 0; i < n; i++) {
+			str += "\n" + arrSeq.getNextValue;
+		}
+		console.log(str);
+	}
+
+	logFive(new ArraySeq([1, 2]));
+	// → 1
+	// → 2
+	logFive(new RangeSeq(100, 1000));
+	// → 100
+	// → 101
+	// → 102
+	// → 103
+	// → 104
+</script>
