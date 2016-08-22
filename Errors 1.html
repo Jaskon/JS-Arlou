@@ -12,7 +12,8 @@
 		try {
 			return primitiveMultiply(a, b);
 		} catch(e) {
-			return reliableMultiply(a, b);
+			if (e instanceof MultiplicatorUnitFailure)
+				return reliableMultiply(a, b);
 		}
 	}
 
