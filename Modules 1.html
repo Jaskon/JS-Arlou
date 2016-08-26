@@ -1,0 +1,21 @@
+<script>
+	var month = {
+		months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+		name: function(nubmer) {
+			return this.months[nubmer];
+		},
+		number: function(name) {
+			for (var i = 0; i < this.months.length; i++) {
+				if ((new RegExp("^" + name + "$", "i")).test(this.months[i]))
+					return i;
+			}
+			return -1;
+			//return this.months.indexOf(name);
+		}
+	};
+
+	console.log(month.name(2));
+	// → March
+	console.log(month.number("November"));
+	// → 10
+</script>
