@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DOM 1</title>
+	<style>
+		/* Defines a cleaner look for tables */
+		table  { border-collapse: collapse; }
+		td, th { border: 1px solid black; padding: 3px 8px; }
+		th     { text-align: left; }
+	</style>
+
+	<script src="JS/mountains.js"></script>
+</head>
+<body>
+	<script>
+		function buildTable(data) {
+			var table = document.createElement("table");
+			var row, cell;
+
+			row = table.insertRow(table.rows.length);
+			cell = row.insertCell();
+			cell.innerHTML = "Name";
+			cell = row.insertCell();
+			cell.innerHTML = "Height";
+			cell = row.insertCell();
+			cell.innerHTML = "Country";
+
+			for (var i = 0; i < data.length; i++) {
+				row = table.insertRow(table.rows.length);
+
+				cell = row.insertCell();
+				cell.innerHTML = data[i]["name"] ? data[i]["name"] : "-";
+
+				cell = row.insertCell();
+				cell.innerHTML = data[i]["height"] ? data[i]["height"] : "-";
+
+				cell = row.insertCell();
+				cell.innerHTML = data[i]["country"] ? data[i]["country"] : "-";
+
+				/*for (var j in data[i]) {
+					switch(j) {
+						case "name":
+							cell = row.insertCell();
+							cell.innerHTML = data[i][j];
+							break;
+
+						case "height":
+							cell = row.insertCell();
+							cell.innerHTML = data[i][j];
+							break;
+
+						case "country":
+							cell = row.insertCell();
+							cell.innerHTML = data[i][j];
+							break;
+					}
+				}*/
+			}
+
+			return table;
+		}
+
+		document.body.appendChild(buildTable(MOUNTAINS));
+	</script>
+</body>
+</html>
