@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DOM 2</title>
+</head>
+<body>
+
+	<h1>Heading with a <span>span</span> element.</h1>
+	<p>A paragraph with <span>one</span>, <span>two</span>
+		spans.</p>
+
+	<script>
+		function byTagName(node, tagName) {
+			var elems = node.childNodes;
+			var arr = [];
+
+			for (var i = 0; i < elems.length; i++) {
+				if ((new RegExp("^" + tagName + "$", "i")).test(elems[i].tagName))
+					arr.push(elems[i]);
+				if (elems[i].childNodes.length > 0)
+					arr = arr.concat(byTagName(elems[i], tagName));
+			}
+
+			return arr;
+		}
+
+		console.log(byTagName(document.body, "h1").length);
+		// → 1
+		console.log(byTagName(document.body, "span").length);
+		// → 3
+		var para = document.querySelector("p");
+		console.log(byTagName(para, "span").length);
+		// → 2
+	</script>
+
+</body>
+</html>
