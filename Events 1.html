@@ -1,0 +1,14 @@
+<input type="text">
+<script>
+	var field = document.querySelector("input");
+	
+	/*field.onkeydown = function(e) {
+		if (e.key == "Q" || e.key == "q" || e.key == "W" || e.key == "w" || e.key == "X" || e.key == "x") {
+			e.preventDefault();
+		}
+	};*/
+
+	field.oninput = function() {
+		this.value = this.value.replace(/[qwx]/ig, "");
+	};
+</script>
