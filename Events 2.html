@@ -1,0 +1,41 @@
+<style>
+	.trail {
+		/* className for the trail elements */
+		position: absolute;
+		height: 6px;
+		width: 6px;
+		border-radius: 3px;
+		background: teal;
+		opacity: 1;
+
+		transition: 0.9s ease-out;
+	}
+
+	body {
+		height: 300px;
+	}
+</style>
+<script>
+	/*var divs = []
+	var start = 0, end = 0;*/
+	function mouseTrail(e) {
+		var div = document.createElement("div");
+		div.className = "trail";
+		div.style.top = e.pageY;        // clientY + scrollTop
+		div.style.left = e.pageX;
+		document.body.appendChild(div);
+
+		setTimeout(function() { div.style.opacity = "0"; div.style.transform = "scale(0.6)" }, 300);
+		setTimeout(function() { div.parentNode.removeChild(div); }, 1300);
+
+		/*if (end > 40)
+			end = 0;
+
+		if (divs[end])
+			divs[end].parentNode.removeChild(divs[end]);
+		divs[end] = div;
+		end++;*/
+	}
+
+	window.addEventListener("mousemove", mouseTrail);
+</script>
