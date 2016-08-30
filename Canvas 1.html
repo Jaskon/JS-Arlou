@@ -1,0 +1,123 @@
+<canvas width="600" height="200"></canvas>
+<script>
+	var cx = document.querySelector("canvas").getContext("2d");
+
+
+	var trapezoid = function(left, top, widthBot, widthTop, height) {
+		cx.beginPath();
+
+		cx.moveTo(left, top + height);
+		cx.lineTo(left + widthBot, top + height);
+		cx.lineTo(left + widthTop + (widthBot-widthTop)/2, top);
+		cx.lineTo(left + (widthBot-widthTop)/2, top);
+		cx.lineTo(left, top + height);
+		
+		cx.strokeStyle = "black";
+		cx.stroke();
+	}
+
+	var diamond = function(left, top, width, height) {
+		cx.beginPath();
+
+		cx.moveTo(left, top + height/2);
+		cx.lineTo(left + width/2, top + height);
+		cx.lineTo(left + width, top + height/2);
+		cx.lineTo(left + width/2, top);
+		cx.lineTo(left, top + height/2);
+
+		cx.closePath();
+
+
+		cx.strokeStyle = "red";
+		cx.stroke();
+		cx.fillStyle = "red";
+		cx.fill();
+	}
+
+	var zigzag = function(left, top, width, height, spacing) {
+		cx.beginPath();
+
+		cx.moveTo(left, top);
+
+		var currTop = top;
+		var state = 0
+		while (currTop + spacing < top + height) {
+			if (state == 0) {
+				currTop += spacing;
+				cx.lineTo(left + width, currTop);
+
+				state = 1;
+			} else {
+				currTop += spacing;
+				cx.lineTo(left, currTop);
+
+				state = 0;
+			}
+		}
+
+		if (currTop < top + height) {
+			if (state == 1)
+				cx.lineTo(left + width - (width * (top + height - currTop) / spacing), currTop + top + height - currTop);
+			else
+				cx.lineTo(left + (width * (top + height - currTop) / spacing), currTop + top + height - currTop);
+		}
+
+		cx.strokeStyle = "black";
+		cx.stroke();
+	}
+
+	var spiral = function(left, top, maxRadius, speed) {
+		cx.beginPath();
+
+		cx.moveTo(left, top);
+
+		var radius = 0, angle = 0;
+		while (radius <= maxRadius) {
+			cx.lineTo(left + radius * Math.sin(angle), top + radius * Math.cos(angle));
+
+
+			angle += speed;
+			radius += 0.1;
+		}
+
+		cx.strokeStyle = "black";
+		cx.stroke();
+	}
+
+	var star = function(left, top, radius) {
+		cx.beginPath();
+
+		/* :) */
+
+		cx.moveTo(left - radius, top);
+		cx.bezierCurveTo(left - radius, top, left - (radius/10) * (Math.cos(Math.PI/8)), top - (radius/10) * (Math.sin(Math.PI/8)), left - radius * (Math.cos(Math.PI/4)), top - radius * Math.sin(Math.PI/4));
+		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI/4)), top - radius * Math.sin(Math.PI/4), left - (radius/10) * (Math.cos(Math.PI/3)), top - (radius/10) * (Math.sin(Math.PI/3)), left - radius * (Math.cos(Math.PI/2)), top - radius * Math.sin(Math.PI/2));
+
+		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI/2)), top - radius * Math.sin(Math.PI/2), left - (radius/10) * (Math.cos(Math.PI/2 + Math.PI/8)), top - (radius/10) * (Math.sin(Math.PI/2 + Math.PI/8)), left - radius * (Math.cos(Math.PI/2 + Math.PI/4)), top - radius * Math.sin(Math.PI/2 + Math.PI/4));
+		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI/2 + Math.PI/4)), top - radius * Math.sin(Math.PI/2 + Math.PI/4), left - (radius/10) * (Math.cos(Math.PI/2 + Math.PI/3)), top - (radius/10) * (Math.sin(Math.PI/2 + Math.PI/3)), left - radius * (Math.cos(Math.PI)), top - radius * Math.sin(Math.PI));
+
+
+		cx.bezierCurveTo(left + radius, top, left - (radius/10) * (Math.cos(Math.PI + Math.PI/8)), top - (radius/10) * (Math.sin(Math.PI + Math.PI/8)), left - radius * (Math.cos(Math.PI + Math.PI/4)), top - radius * Math.sin(Math.PI + Math.PI/4));
+		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI + Math.PI/4)), top - radius * Math.sin(Math.PI + Math.PI/4), left - (radius/10) * (Math.cos(Math.PI + Math.PI/3)), top - (radius/10) * (Math.sin(Math.PI + Math.PI/3)), left - radius * (Math.cos(Math.PI + Math.PI/2)), top - radius * Math.sin(Math.PI + Math.PI/2));
+
+		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI + Math.PI/2)), top - radius * Math.sin(Math.PI + Math.PI/2), left - (radius/10) * (Math.cos(Math.PI + Math.PI/2 + Math.PI/8)), top - (radius/10) * (Math.sin(Math.PI + Math.PI/2 + Math.PI/8)), left - radius * (Math.cos(Math.PI + Math.PI/2 + Math.PI/4)), top - radius * Math.sin(Math.PI + Math.PI/2 + Math.PI/4));
+		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI + Math.PI/2 + Math.PI/4)), top - radius * Math.sin(Math.PI + Math.PI/2 + Math.PI/4), left - (radius/10) * (Math.cos(Math.PI + Math.PI/2 + Math.PI/3)), top - (radius/10) * (Math.sin(Math.PI + Math.PI/2 + Math.PI/3)), left - radius * (Math.cos(Math.PI + Math.PI)), top - radius * Math.sin(Math.PI + Math.PI));
+
+
+		cx.strokeStyle = "orange";
+		cx.fillStyle = "orange";
+		cx.stroke();
+		cx.fill();
+	}
+
+
+	trapezoid(20, 30, 100, 60, 50);
+
+	diamond(140, 20, 70, 70);
+
+	zigzag(230, 22, 70, 63, 5);
+
+	spiral(360, 50, 40, 0.1);
+
+	star(460, 50, 40);
+</script>
