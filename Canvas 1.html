@@ -87,21 +87,11 @@
 	var star = function(left, top, radius) {
 		cx.beginPath();
 
-		/* :) */
-
 		cx.moveTo(left - radius, top);
-		cx.bezierCurveTo(left - radius, top, left - (radius/10) * (Math.cos(Math.PI/8)), top - (radius/10) * (Math.sin(Math.PI/8)), left - radius * (Math.cos(Math.PI/4)), top - radius * Math.sin(Math.PI/4));
-		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI/4)), top - radius * Math.sin(Math.PI/4), left - (radius/10) * (Math.cos(Math.PI/3)), top - (radius/10) * (Math.sin(Math.PI/3)), left - radius * (Math.cos(Math.PI/2)), top - radius * Math.sin(Math.PI/2));
 
-		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI/2)), top - radius * Math.sin(Math.PI/2), left - (radius/10) * (Math.cos(Math.PI/2 + Math.PI/8)), top - (radius/10) * (Math.sin(Math.PI/2 + Math.PI/8)), left - radius * (Math.cos(Math.PI/2 + Math.PI/4)), top - radius * Math.sin(Math.PI/2 + Math.PI/4));
-		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI/2 + Math.PI/4)), top - radius * Math.sin(Math.PI/2 + Math.PI/4), left - (radius/10) * (Math.cos(Math.PI/2 + Math.PI/3)), top - (radius/10) * (Math.sin(Math.PI/2 + Math.PI/3)), left - radius * (Math.cos(Math.PI)), top - radius * Math.sin(Math.PI));
-
-
-		cx.bezierCurveTo(left + radius, top, left - (radius/10) * (Math.cos(Math.PI + Math.PI/8)), top - (radius/10) * (Math.sin(Math.PI + Math.PI/8)), left - radius * (Math.cos(Math.PI + Math.PI/4)), top - radius * Math.sin(Math.PI + Math.PI/4));
-		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI + Math.PI/4)), top - radius * Math.sin(Math.PI + Math.PI/4), left - (radius/10) * (Math.cos(Math.PI + Math.PI/3)), top - (radius/10) * (Math.sin(Math.PI + Math.PI/3)), left - radius * (Math.cos(Math.PI + Math.PI/2)), top - radius * Math.sin(Math.PI + Math.PI/2));
-
-		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI + Math.PI/2)), top - radius * Math.sin(Math.PI + Math.PI/2), left - (radius/10) * (Math.cos(Math.PI + Math.PI/2 + Math.PI/8)), top - (radius/10) * (Math.sin(Math.PI + Math.PI/2 + Math.PI/8)), left - radius * (Math.cos(Math.PI + Math.PI/2 + Math.PI/4)), top - radius * Math.sin(Math.PI + Math.PI/2 + Math.PI/4));
-		cx.bezierCurveTo(left - radius * (Math.cos(Math.PI + Math.PI/2 + Math.PI/4)), top - radius * Math.sin(Math.PI + Math.PI/2 + Math.PI/4), left - (radius/10) * (Math.cos(Math.PI + Math.PI/2 + Math.PI/3)), top - (radius/10) * (Math.sin(Math.PI + Math.PI/2 + Math.PI/3)), left - radius * (Math.cos(Math.PI + Math.PI)), top - radius * Math.sin(Math.PI + Math.PI));
+		for (var i = 0; i < 360; i += 45) {
+			cx.bezierCurveTo(left - radius * Math.cos(Math.PI * (i)/180), top - radius * Math.sin(Math.PI * (i)/180), left - (radius/10) * Math.cos(Math.PI * (i+22.5)/180), top - (radius/10) * Math.sin(Math.PI * (i+22.5)/180), left - radius * Math.cos(Math.PI * (i+45)/180), top - radius * Math.sin(Math.PI * (i+45)/180));
+		}
 
 
 		cx.strokeStyle = "orange";
