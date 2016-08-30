@@ -1,0 +1,58 @@
+<div id="wrapper">
+	<div data-tabname="one">Tab one</div>
+	<div data-tabname="two">Tab two</div>
+	<div data-tabname="three">Tab three</div>
+</div>
+
+<script>
+	function asTabs(node) {
+		var tabsWrap = document.createElement("div");
+		tabsWrap.style.height = "20px";
+		tabsWrap.style.padding = "2px";
+		tabsWrap.style.marginBottom = "6px";
+
+		var childs = [];
+		for (var i = 0; i < node.childNodes.length; i++) {
+			if (!node.childNodes[i].tagName)
+				continue;
+			childs.push(node.childNodes[i]);
+		}
+		var tabs = [];
+
+		var forFunc = function (i) {
+			var tab = document.createElement("div");
+			tabs.push(tab);
+			var child = childs[i];
+			var sDisplay = child.style.display;
+			childs[i].style.display = "none";
+			tab.style.height = "20px";
+			tab.style.lineHeight = "20px";
+			tab.style.display = "inline-block";
+			tab.style.padding = "0px 3px";
+			tab.style.border = "2px solid lightgreen";
+			tab.onclick = function() {
+				child.style.display = sDisplay;
+				tab.style.border = "2px solid green";
+				for (var j = 0; j < tabs.length; j++)
+					if (tabs[j] != tab)
+						tabs[j].style.border = "2px solid lightgreen";
+				for (var j = 0; j < childs.length; j++)
+					if (childs[j] != child)
+						childs[j].style.display = "none";
+			};
+			tabsWrap.appendChild(tab);
+			tab.innerHTML = child.getAttribute("data-tabname");
+
+			i++;
+			if (i >= childs.length)
+				return;
+			else
+				forFunc(i)
+		}
+		forFunc(0);
+
+		node.insertBefore(tabsWrap, node.firstChild);
+	}
+
+	asTabs(document.querySelector("#wrapper"));
+</script>
