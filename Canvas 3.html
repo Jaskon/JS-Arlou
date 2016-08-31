@@ -1,0 +1,52 @@
+<canvas width="400" height="400" style="border: 1px solid black"></canvas>
+<script>
+	var cx = document.querySelector("canvas").getContext("2d");
+
+	var lastTime = null;
+
+	function frame(time) {
+		if (lastTime != null)
+			updateAnimation(Math.min(100, time - lastTime) / 1000);
+		lastTime = time;
+		requestAnimationFrame(frame);
+	}
+	requestAnimationFrame(frame);
+
+
+	var gravity = 1200;
+	var ballRadius = 40;
+	var ballSpeedX = 120, ballSpeedY = 0;
+	var ballX = 100, ballY = 300;        // Старт позиция
+
+	function updateAnimation(dTime) {
+		ballSpeedY -= gravity * dTime;
+
+		ballX += ballSpeedX * dTime;
+		ballY -= ballSpeedY * dTime;
+
+
+		// Если встречена граница
+		if (ballX - ballRadius <= 0 && ballSpeedX < 0) {
+			ballX += (ballRadius - ballX) * 2;
+			ballSpeedX = -ballSpeedX;
+		} else if (ballX + ballRadius >= 400 && ballSpeedX > 0) {
+			ballX -= (ballRadius - 400 + ballX) * 2;
+			ballSpeedX = -ballSpeedX;
+		}
+		if (ballY - ballRadius <= 0 && ballSpeedY > 0) {
+			ballY += (ballRadius - ballY) * 2;
+			ballSpeedY = -ballSpeedY;
+		} else if (ballY + ballRadius >= 400 && ballSpeedY < 0) {
+			ballY -= (ballRadius - 400 + ballY) * 2;
+			ballSpeedY = -ballSpeedY;
+		}
+
+
+		cx.clearRect(0, 0, cx.canvas.width, cx.canvas.height);
+		cx.beginPath();
+		
+		cx.arc(ballX, ballY, ballRadius, 0, 2*Math.PI);
+
+		cx.stroke();
+	}
+</script>
