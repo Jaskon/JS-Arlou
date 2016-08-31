@@ -1,0 +1,29 @@
+<body></body>
+
+<script>
+	var req = function(hAccept, callback) {
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "http://eloquentjavascript.net/author");
+		xhr.setRequestHeader("Accept", hAccept);
+		xhr.onload = function() {
+			if (this.status == 200) {
+				if (callback)
+					callback(this.response);
+				else
+					console.log(this.response);
+			}
+		}
+		xhr.onerror = function() {
+			callback("! Some error occurred !");
+		}
+		xhr.send();
+	}
+
+	req("text/plain", function(res) { alert("text/plain:\n\n----------------\n\n" + res + "\n"); });
+	req("text/html", function(res) { alert("text/html:\n\n----------------\n\n" + res + "\n"); });
+	req("application/json", function(res) { alert("application/json:\n\n----------------\n\n" + res + "\n"); });
+
+	req("rainbows+unicorns", function(res) { alert("rainbows+unicorns:\n\n----------------\n\n" + res + "\n"); });
+	/*var hMyAccept = prompt("Enter your \"Accept\" header");
+	req(hMyAccept, function(res) { alert(hMyAccept + ":\n\n----------------\n\n" + res + "\n"); });*/
+</script>
