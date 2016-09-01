@@ -3,53 +3,52 @@
 		var arr = new Array(promises.length);
 		var n = 0;
 
-		var then = function(arr, i, success, fail) {
-			promises[i].then(function(res) {
-        		arr[i] = res;
-        		n++;
-        		if (n >= promises.length)
-        			success(arr);
-        	}, function(err) {
-        		fail(err);
-        	});
-		}
+		return new Promise(function(success, fail) {
+			if (promises.length == 0)
+				success(arr);
 
-	    return new Promise(function(success, fail) {
-	    	if (promises.length == 0)
-	    		success(arr);
+			for (var i = 0; i < promises.length; i++) {
 
-	        for (var i = 0; i < promises.length; i++) {
-	   			then(arr, i, success, fail);
-	        }
-	    });
+				(function(i) {
+					promises[i].then(function(res) {
+						arr[i] = res;
+						n++;
+						if (n >= promises.length)
+							success(arr);
+					}, function(err) {
+						fail(err);
+					});
+				})(i);
+			}
+		});
 	}
 
 	// Test code.
 	all([]).then(function(array) {
-	    console.log("This should be []:", array);
+		console.log("This should be []:", array);
 	});
 
 	function soon(val) {
-	    return new Promise(function(success) {
-	        setTimeout(function() {
-	                success(val);
-	            },
-	            Math.random() * 500);
-	    });
+		return new Promise(function(success) {
+			setTimeout(function() {
+					success(val);
+				},
+				Math.random() * 500);
+		});
 	}
 	all([soon(1), soon(2), soon(3)]).then(function(array) {
-	    console.log("This should be [1, 2, 3]:", array);
+		console.log("This should be [1, 2, 3]:", array);
 	});
 
 	function fail() {
-	    return new Promise(function(success, fail) {
-	        fail(new Error("boom"));
-	    });
+		return new Promise(function(success, fail) {
+			fail(new Error("boom"));
+		});
 	}
 	all([soon(1), fail(), soon(3)]).then(function(array) {
-	    console.log("We should not get here");
+		console.log("We should not get here");
 	}, function(error) {
-	    if (error.message != "boom")
-	        console.log("Unexpected failure:", error);
+		if (error.message != "boom")
+			console.log("Unexpected failure:", error);
 	});
 </script>
