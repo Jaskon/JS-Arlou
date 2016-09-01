@@ -4,7 +4,7 @@
 
 <script>
 	document.getElementById("button").onclick = function() {
-		var code = document.getElementById("code").innerHTML;
+		var code = document.getElementById("code").value;
 		var res = (new Function(code))();
 		document.getElementById("output").innerHTML = res;
 	};
