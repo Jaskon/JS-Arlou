@@ -1,0 +1,11 @@
+<textarea id="code">return "hi";</textarea>
+<button id="button">Run</button>
+<div id="output"></div>
+
+<script>
+	document.getElementById("button").onclick = function() {
+		var code = document.getElementById("code").innerHTML;
+		var res = (new Function(code))();
+		document.getElementById("output").innerHTML = res;
+	};
+</script>
