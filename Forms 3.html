@@ -1,0 +1,107 @@
+<div id="grid"></div>
+<button id="next">Next generation</button>
+
+<script>
+	var grid = document.getElementById("grid");
+
+	var size = 30;
+	var arr = new Array(size);
+	for (var i = 0; i < arr.length; i++) {
+		arr[i] = new Array(size);
+		for (var j = 0; j < size; j++) {
+			arr[i][j] = 0;
+		}
+	}
+
+	var checks = new Array(size);		// Doms array
+	var br;
+	for (var i = 0; i < checks.length; i++) {
+		checks[i] = new Array(size);
+		for (var j = 0; j < size; j++) {
+			checks[i][j] = document.createElement("input");
+			checks[i][j].type = "checkbox";
+			(function(i, j) {
+				checks[i][j].onclick = function () {
+					if (checks[i][j].checked)
+						arr[i][j] = true;
+					else
+						arr[i][j] = false;
+				}
+			})(i, j);
+			grid.appendChild(checks[i][j]);
+		}
+		br = document.createElement("span");
+		br.innerHTML = "<br>";
+		grid.appendChild(br);
+	}
+
+	function draw() {
+		for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
+				checks[i][j].checked = arr[i][j] == 0 ? false : true;
+			}
+		}
+	}
+
+	function adjCount(i, j) {
+		var count = 0;
+
+		if (i > 0) {
+			if (j > 0) {
+				count += arr[i-1][j-1];
+			}
+			if (j < size-1)
+				count += arr[i-1][j+1];
+			count += arr[i-1][j];
+		}
+		if (i < size-1) {
+			if (j > 0) {
+				count += arr[i+1][j-1];
+			}
+			if (j < size-1)
+				count += arr[i+1][j+1];
+			count += arr[i+1][j];
+		}
+		if (j > 0) {
+			count += arr[i][j-1];
+		}
+		if (j < size-1)
+			count += arr[i][j+1];
+
+		return count;
+	}
+
+	// Init
+	for (var i = 0; i < size; i++) {
+		for (var j = 0; j < size; j++) {
+			arr[i][j] = Math.round(Math.random());
+		}
+	}
+	draw();
+
+
+	document.getElementById("next").onclick = function() {
+		var count;
+		var tArr = new Array(size);
+		for (var i = 0; i < size; i++) {
+			tArr[i] = new Array(size);
+			for (var j = 0; j < size; j++) {
+				tArr[i][j] = arr[i][j];
+			}
+		}
+
+		for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
+				count = adjCount(i, j);
+				if (count < 2 || count > 3)
+					tArr[i][j] = 0;
+				else if (arr[i][j] == 0 && count == 3)
+					tArr[i][j] = 1;
+			}
+		}
+
+		arr = tArr;
+
+		draw();
+	};
+</script>
