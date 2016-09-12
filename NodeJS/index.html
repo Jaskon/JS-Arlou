@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Content editor </title>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		.explorer {
+			box-sizing: border-box;
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			width: 20%;
+			padding: 5px;
+			transition: 1.5s ease-out;
+		}
+		.editor {
+			box-sizing: border-box;
+			position: absolute;
+			left: 20%;
+			top: 0px;
+			width: 80%;
+			height: 100%;
+			border: 1px solid black;
+			padding: 5px;
+			transition: 1.5s ease-out;
+		}
+	</style>
+</head>
+<body>
+	<div id="explorer" class="explorer"></div>
+	<textarea id="editor" class="editor" type="text" name="index.html"></textarea>
+	<button id="submit" style="position: absolute; left: calc(100% - 80px); top: calc(100% - 50px); width: 80px; height: 50px; font-size: 18pt;">OK</button>
+
+	<script>
+		var depth = ["http://localhost:3000/"];
+		var explorer = document.getElementById("explorer");
+		var editor = document.getElementById("editor");
+
+
+		var clearExplorer = function() {		// Очистка проводника
+			var nodes = explorer.childNodes;
+			for (var i = nodes.length - 1; i >= 0; i--) {
+				explorer.removeChild(nodes[i]);
+			}
+		};
+
+		var putReq = function() {
+			var xhr = new XMLHttpRequest();
+			xhr.open("PUT", editor.name);
+			xhr.setRequestHeader("_puttype", "file");
+			xhr.onload = function() {
+				if (this.status == 200) {
+					if (this.responseText)
+						alert(this.responseText);
+					aClick("..");
+				}
+			};
+			xhr.send(editor.value);
+		};
+
+		var aDelClick = function (name) {		// DELETE-запрос
+			var xhr = new XMLHttpRequest();
+			xhr.open("DELETE", depth.join("") + name);
+			xhr.onload = function() {
+				if (this.status == 200) {
+					if (this.responseText == "")
+						alert("File/folder successfully deleted");
+					else
+						alert("Error: " + this.responseText);
+					aClick("");
+				}
+			};
+			xhr.send();
+		};
+
+		var aCreateClick = function() {
+			var xhr = new XMLHttpRequest();
+			if (confirm("Create folder (OK) or file (Cancel)?")) {
+				var name = prompt("Folder name:");
+				if (name == null)
+					return;
+				xhr.open("PUT", depth.join("") + name);
+				xhr.setRequestHeader("_puttype", "directory");
+				xhr.onload = function() {
+					if (this.status == 200) {
+						if (this.responseText == "")
+							alert("Folder created");
+						else
+							alert("Error: " + this.responseText);
+
+						aClick("");
+					}
+				};
+			} else {
+				var name = prompt("File name:");
+				if (name == null)
+					return;
+				xhr.open("PUT", depth.join("") + name);
+				xhr.setRequestHeader("_puttype", "file");
+				xhr.onload = function() {
+					if (this.status == 200) {
+						if (this.responseText == "")
+							alert("File created");
+						else
+							alert("Error: " + this.responseText);
+
+						aClick("");
+					}
+				};
+			}
+			xhr.send("");
+		};
+
+		var aClick = function(name) {		// Когда кликаем по ссылке в проводнике
+			var xhr = new XMLHttpRequest();
+			if (name == "..") {		// Если хотим подняться выше в проводнике
+				if (depth.length > 1)
+					depth.pop();
+				xhr.open("GET", depth.length == 1 ? (depth[0] + "^") : (depth.join("")));		// Хотим ли в корень (без символа ^ сервер отдаёт страницу-редактор)
+			} else if (name == "") {
+				xhr.open("GET", depth.length == 1 ? (depth[0] + "^") : (depth.join("")));
+			} else {
+				depth.push(name + "/");
+				xhr.open("GET", depth.join(""));
+			}
+			xhr.onload = function() {
+				if (this.status == 200) {
+					if (this.getResponseHeader("Content-Type") == "text/plain") {		// Сервер вернул содержимое папки
+						clearExplorer();
+
+						if (depth.length > 1) {		// Если поднимаемся НЕ в корень - добавляем в начало ссылку ".."
+							var div = document.createElement("div");
+							div.style.border = "1px solid orange";
+							div.style.width = "calc(100% - 100px)";
+							div.style.margin = "3px";
+							div.style.marginLeft = "17px";
+							div.style.cursor = "pointer";
+							div.innerHTML = "..";
+							(function(name) { div.onclick = function() { aClick(name); }; })(div.innerHTML);
+							explorer.appendChild(div);
+						}
+
+						var list = JSON.parse(this.responseText);		// Сервер возвращает объект - содержимое папки
+						var div, delDiv;
+						for (var i = 0; i < list.length; i++) {
+							delDiv = document.createElement("div");
+							delDiv.style.display = "inline-block";
+							delDiv.style.width = "14px";
+							delDiv.style.height = "14px";
+							delDiv.style.backgroundColor = "red";
+							delDiv.title = "Delete";
+							delDiv.style.cursor = "pointer";
+							(function(name) { delDiv.onclick = function() { aDelClick(name); }; })(list[i]);
+							explorer.appendChild(delDiv);
+
+							div = document.createElement("div");
+							div.style.display = "inline-block";
+							div.style.border = "1px solid orange";
+							div.style.width = "calc(100% - 100px)";
+							div.style.margin = "3px";
+							div.style.cursor = "pointer";
+							div.innerHTML = list[i];
+							(function(name) { div.onclick = function() { aClick(name); }; })(list[i]);
+							explorer.appendChild(div);
+					
+							explorer.appendChild(document.createElement("br"));
+						}
+
+						explorer.appendChild(document.createElement("br"));
+
+						div = document.createElement("button");		// Create file/folder button
+						div.innerHTML = "Create file/folder";
+						div.onclick = aCreateClick;
+						explorer.appendChild(div);
+
+					} else {		// Сервер вернул файл
+						editor.name = depth.join("");
+						depth.pop();		// Выше мы добавили к пути название ссылки. Если это файл (не папка) - запоминаем её (для putReq) и удаляем
+						editor.value = this.responseText;
+					}
+				}
+			}
+			xhr.send();
+		};
+
+
+		document.getElementById("submit").onclick = putReq;
+
+		var xhr = new XMLHttpRequest();		// Вступительное обращение к корню папки Site
+		xhr.open("GET", depth[0] + "^");
+		xhr.onload = function() {
+			if (this.status = 200) {
+				var list = JSON.parse(this.responseText);
+				var div, delDiv, br;
+				for(var i = 0; i < list.length; i++) {
+					delDiv = document.createElement("div");
+					delDiv.style.display = "inline-block";
+					delDiv.style.width = "14px";
+					delDiv.style.height = "14px";
+					delDiv.style.backgroundColor = "red";
+					delDiv.title = "Delete";
+					delDiv.style.cursor = "pointer";
+					(function(name) { delDiv.onclick = function() { aDelClick(name); }; })(list[i]);
+					explorer.appendChild(delDiv);
+
+					div = document.createElement("div");
+					div.style.display = "inline-block";
+					div.style.border = "1px solid orange";
+					div.style.width = "calc(100% - 100px)";
+					div.style.margin = "3px";
+					div.style.cursor = "pointer";
+					div.innerHTML = list[i];
+					(function(name) { div.onclick = function() { aClick(name); }; })(list[i]);
+					explorer.appendChild(div);
+
+					explorer.appendChild(document.createElement("br"));
+				}
+
+				explorer.appendChild(document.createElement("br"));
+
+				div = document.createElement("button");		// Create file/folder button
+				div.innerHTML = "Create file/folder";
+				div.onclick = aCreateClick;
+				explorer.appendChild(div);
+			}
+		}
+		xhr.send();
+
+		var xhr = new XMLHttpRequest();		// Вступительное обращение к ./Site/index.html
+		xhr.open("GET", depth[0] + "index.html");
+		xhr.onload = function() {
+			if (this.status = 200) {
+				if (this.responseText == "File or directory is not exists")
+					editor.value = "";
+				else
+					editor.value = this.responseText;
+			}
+		}
+		xhr.send();
+	</script>
+</body>
+</html>
